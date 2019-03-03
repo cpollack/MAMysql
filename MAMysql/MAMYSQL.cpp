@@ -27,16 +27,19 @@ void mamysql_close() {
 }
 
 char* mamysql_queryGetValue(char* query) {
-	char* value = new char(200);
+	char* value = nullptr;
 
 	mysql_query(con, query);
 	MYSQL_RES *result = mysql_store_result(con);
 	if (result != NULL) {
 		if (result->row_count > 0) {
 			MYSQL_ROW row = mysql_fetch_row(result);
+			value = new char[sizeof(row[0])];
 			strcpy(value, row[0]);
 		}
-		else printf("Query found no rows\n");
+		else {
+			printf("Query found no rows\n");
+		}
 	}
 	else fprintf(stderr, "%s\n", mysql_error(con));
 	mysql_free_result(result);
